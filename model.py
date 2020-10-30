@@ -9,5 +9,4 @@ from wtforms.validators import InputRequired, Length, EqualTo, ValidationError, 
 from base import BaseForm as Form
 
 class CrashReportForm(Form):
-    data = StringField('data', validators=[DataRequired(message="Data required!")])
     data = StringField()

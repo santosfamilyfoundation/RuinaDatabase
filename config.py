@@ -6,7 +6,7 @@
 class ChatConfig:
     MYSQL_CONFIG = {
         "addr": "mysql-virginia.cyqvleztnbng.us-east-1.rds.amazonaws.com",
-        "db": "RuinaDBtest1",
+        "db": "testdb1",
         "user": "admin",
         "pwd": "Santosvolpescope1",
         "port": 3306

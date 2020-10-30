@@ -40,7 +40,6 @@ class APIException(HTTPException):
     @staticmethod
     def get_url_no_param():
         """
-        获取当前请求
         :return:
         """
         full_path = str(request.full_path)
