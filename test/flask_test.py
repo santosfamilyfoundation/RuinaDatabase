@@ -6,13 +6,15 @@
 
 import os
 import unittest
-
+from config import ChatConfig
+from connect import MySQLClient
 from run import app
+import json
 
 TEST_DB = 'test.db'
 
 
-class BasicTests(unittest.TestCase):
+class TestDB(unittest.TestCase):
 
     ############################
     #### setup and teardown ####
@@ -20,20 +22,14 @@ class BasicTests(unittest.TestCase):
 
     # executed prior to each test
     def setUp(self):
-        app.config['TESTING'] = True
-        app.config['WTF_CSRF_ENABLED'] = False
-        app.config['DEBUG'] = False
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
-                                                os.path.join(app.config['BASEDIR'], TEST_DB)
         self.app = app.test_client()
-        db.drop_all()
-        db.create_all()
+        url = ChatConfig.MYSQL_CONFIG
+        if not url:
+            self.skipTest("No database URL set")
+        self.client = MySQLClient(**url)
+        if self.client.conn:
+            self.client.execute_noquery_cmd("CREATE DATABASE testdb111")
 
-        # Disable sending emails during unit testing
-        # mail.init_app(app)
-        self.assertEqual(app.debug, False)
-
-    # executed after each test
     def tearDown(self):
         pass
 
@@ -42,7 +38,10 @@ class BasicTests(unittest.TestCase):
     ###############
 
     def test_add_report(self):
-        response = self.app.post('/v1/addReport', follow_redirects=True)
+        payload = json.dumps({
+            "data": "DB Testing",
+        })
+        response = self.app.post('/v1/addReport', headers={"Content-Type": "application/json"}, data=payload)
         self.assertEqual(response.status_code, 200)
 
 
